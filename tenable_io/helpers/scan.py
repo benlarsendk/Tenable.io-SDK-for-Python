@@ -111,6 +111,16 @@ class ScanHelper(object):
         )
         return ScanRef(self._client, scan_id)
 
+    def update(scan_id, text_targets, name=None, starttime=None, enabled=False):
+        if isinstance(text_targets, list):
+            text_targets = ','.join(text_targets)
+        settings = {"enabled": enabled, "text_targets": text_targets}
+        if name is not None:
+            settings["name"] = name
+        if starttime is not None:
+            settings["starttime"] = starttime
+        self._client.scans_api.update(scan_id, settings)
+
     def template(self, name=None, title=None):
         """Get template by name or title. The `title` argument is ignored if `name` is passed.
 

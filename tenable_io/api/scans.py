@@ -6,7 +6,6 @@ from tenable_io.api.base import BaseRequest
 
 
 class ScansApi(BaseApi):
-
     STATUS_EXPORT_READY = u'ready'
 
     def configure(self, scan_id, scan_configure):
@@ -45,6 +44,44 @@ class ScansApi(BaseApi):
         """
         self._client.delete('scans/%(scan_id)s', path_params={'scan_id': scan_id})
         return True
+
+    def update(self,scan_id, scan_settings):
+        """Update a scan.
+
+         :param scan_id: The ID of the scan to update`.
+         :param scan_settings: instance of the :class:'ScanSettings'.
+         """
+        data = {'settings': {}, 'scan_id': scan_id}
+        data['settings']['enabled'] = scan_settings["enabled"]
+
+        if "name" in scan_settings:
+            data['settings']['name'] = scan_settings["name"]
+        if "description" in scan_settings:
+            data['settings']['description'] = scan_settings["description"]
+        if "policy_id" in scan_settings:
+            data['settings']['policy_id'] = scan_settings["policy_id"]
+        if "folder_id" in scan_settings:
+            data['settings']['folder_id'] = scan_settings["folder_id"]
+        if "scanner_id" in scan_settings:
+            data['settings']['scanner_id'] = scan_settings["scanner_id"]
+        if "launch" in scan_settings:
+            data['settings']['launch'] = scan_settings["launch"]
+        if "starttime" in scan_settings:
+            data['settings']['starttime'] = scan_settings["starttime"]
+        if "rrules" in scan_settings:
+            data['settings']['rrules'] = scan_settings["rrules"]
+        if "timezone" in scan_settings:
+            data['settings']['timezone'] = scan_settings["timezone"]
+        if "text_targets" in scan_settings:
+            data['settings']['text_targets'] = scan_settings["text_targets"]
+        if "file_targets" in scan_settings:
+            data['settings']['file_targets'] = scan_settings["file_targets"]
+        if "emails" in scan_settings:
+            data['settings']['emails'] = scan_settings["emails"]
+        if "acls" in scan_settings:
+            data['settings']['acls'] = scan_settings["acls"]
+
+        self._client.put('scans/%(scan_id)s', data, path_params={'scan_id': scan_id})
 
     def details(self, scan_id, history_id=None):
         """Return details of the given scan.
@@ -260,7 +297,6 @@ class ScanConfigureRequest(ScanSaveRequest):
 
 
 class ScanExportRequest(BaseRequest):
-
     CHAPTER_CUSTOM_VULN_BY_HOST = u'vuln_by_host'
     CHAPTER_CUSTOM_VULN_BY_PLUGIN = u'vuln_by_plugin'
     CHAPTER_EXECUTIVE_SUMMARY = u'vuln_hosts_summary'
